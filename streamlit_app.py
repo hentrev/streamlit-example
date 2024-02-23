@@ -2,39 +2,37 @@ import altair as alt
 import numpy as np
 import pandas as pd
 import streamlit as st
+import requests
 
-"""
-# Welcome to Streamlit!
+station_information = 'https://gbfs.nextbike.net/maps/gbfs/v2/nextbike_mz/de/station_information.json'
+station_status = 'https://gbfs.nextbike.net/maps/gbfs/v2/nextbike_mz/de/station_status.json'
 
-Edit `/streamlit_app.py` to customize this app to your heart's desire :heart:.
-If you have any questions, checkout our [documentation](https://docs.streamlit.io) and [community
-forums](https://discuss.streamlit.io).
+json_information = requests.get(station_information).json()
+json_status = requests.get(station_status).json()
 
-In the meantime, below is an example of what you can do with just a few lines of code:
-"""
+df_info = pd.DataFrame(json_information['data']['stations'])
+df_status = pd.DataFrame(json_status['data']['stations'])
 
-num_points = st.slider("Number of points in spiral", 1, 10000, 1100)
-num_turns = st.slider("Number of turns in spiral", 1, 300, 31)
+df_info['station_id'] = df_info['station_id'].astype(int)
+df_status['station_id'] = df_status['station_id'].astype(int)
 
-indices = np.linspace(0, 1, num_points)
-theta = 2 * np.pi * num_turns * indices
-radius = indices
+df_merged = df_info.merge(df_status, left_on='station_id', right_on='station_id')
+df_merged['num_bikes_available'] = df_merged['num_bikes_available']
+df_merged['ratio'] = (df_merged['num_bikes_available'] / df_merged['num_docks_available'])
+df_merged['ratio'].replace(np.inf, 0, inplace=True)
 
-x = radius * np.cos(theta)
-y = radius * np.sin(theta)
+def get_color(pct):
+    pct_diff = 1.0 - pct
+    red_color = min(255, pct_diff*2 * 255)
+    green_color = min(255, pct*2 * 255)
+    col = (red_color, green_color, 0)
+    return col
 
-df = pd.DataFrame({
-    "x": x,
-    "y": y,
-    "idx": indices,
-    "rand": np.random.randn(num_points),
-})
+df_merged['color'] = df_merged.apply(lambda row: get_color(row['ratio']), axis=1)
 
-st.altair_chart(alt.Chart(df, height=700, width=700)
-    .mark_point(filled=True)
-    .encode(
-        x=alt.X("x", axis=None),
-        y=alt.Y("y", axis=None),
-        color=alt.Color("idx", legend=None, scale=alt.Scale()),
-        size=alt.Size("rand", legend=None, scale=alt.Scale(range=[1, 150])),
-    ))
+
+empty_stations = df_merged[df_merged['num_bikes_available'] == 0]
+
+st.markdown('## Stationen ohne Räder')
+st.map(empty_stations, latitude='lat', longitude='lon')
+st.dataframe(empty_stations[['name', 'num_bikes_available', 'num_docks_available']])
