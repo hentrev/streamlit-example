@@ -33,16 +33,26 @@ def get_color(pct):
 df_merged['color'] = df_merged.apply(lambda row: get_color(row['ratio']), axis=1)
 
 empty_stations = df_merged[df_merged['num_bikes_available'] == 0]
+full_stations = df_merged[df_merged['num_bikes_available'] == df_merged['num_docks_available']]
 
-st.markdown('## Nextbike Mainz - Stationen ohne Räder')
+st.markdown('## Nextbike Mainz - Stationsstatus')
 
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
 percentage_empty_stations = str(int(((len(empty_stations) / len(df_merged))*100))) + "%"
 col1.metric('Leere Stationen', len(empty_stations))
 col2.metric('Anteil leere Stationen', percentage_empty_stations)
+col3.metric('Volle Stationen', len(full_stations))
 
+ids_empty = empty_stations['name'].tolist()
+ids_full = full_stations['name'].tolist()
+
+st.markdown('### Leere Stationen')
 st.map(empty_stations, latitude='lat', longitude='lon')
 st.dataframe(empty_stations[['name', 'num_bikes_available', 'num_docks_available']])
+
+st.markdown('### Volle Stationen')
+st.map(full_stations, latitude='lat', longitude='lon')
+st.dataframe(full_stations[['name', 'num_bikes_available', 'num_docks_available']])
 
 st.markdown('Daten aus öffentlicher [GBFS](https://github.com/MobilityData/gbfs) API: https://gbfs.nextbike.net/maps/gbfs/v2/nextbike_mz/de/')
 
