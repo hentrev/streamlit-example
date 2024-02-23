@@ -46,7 +46,3 @@ st.dataframe(empty_stations[['name', 'num_bikes_available', 'num_docks_available
 
 st.markdown('Daten aus öffentlicher [GBFS](https://github.com/MobilityData/gbfs) API: https://gbfs.nextbike.net/maps/gbfs/v2/nextbike_mz/de/')
 
-
-while True:
-    sleep(15)
-    st.rerun()
