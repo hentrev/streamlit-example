@@ -3,6 +3,8 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 import requests
+from time import sleep
+
 
 station_information = 'https://gbfs.nextbike.net/maps/gbfs/v2/nextbike_mz/de/station_information.json'
 station_status = 'https://gbfs.nextbike.net/maps/gbfs/v2/nextbike_mz/de/station_status.json'
@@ -30,11 +32,9 @@ def get_color(pct):
 
 df_merged['color'] = df_merged.apply(lambda row: get_color(row['ratio']), axis=1)
 
-
 empty_stations = df_merged[df_merged['num_bikes_available'] == 0]
 
-st.markdown('## Stationen ohne Räder')
-
+st.markdown('## Nextbike Mainz - Stationen ohne Räder')
 
 col1, col2 = st.columns(2)
 percentage_empty_stations = str(int(((len(empty_stations) / len(df_merged))*100))) + "%"
@@ -43,3 +43,10 @@ col2.metric('Anteil leere Stationen', percentage_empty_stations)
 
 st.map(empty_stations, latitude='lat', longitude='lon')
 st.dataframe(empty_stations[['name', 'num_bikes_available', 'num_docks_available']])
+
+st.markdown('Daten aus öffentlicher [GBFS](https://github.com/MobilityData/gbfs) API: https://gbfs.nextbike.net/maps/gbfs/v2/nextbike_mz/de/')
+
+
+while True:
+    sleep(15)
+    st.rerun()
