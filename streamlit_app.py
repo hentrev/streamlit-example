@@ -42,7 +42,7 @@ def get_color(pct):
 df_merged['color'] = df_merged.apply(lambda row: get_color(row['ratio']), axis=1)
 
 empty_stations = df_merged[df_merged['num_bikes_available'] == 0]
-full_stations = df_merged[df_merged['num_bikes_available'] == df_merged['num_docks_available']]
+full_stations = df_merged[df_merged['num_docks_available'] == 0]
 
 st.markdown('## Nextbike Mainz - Status')
 
