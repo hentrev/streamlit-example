@@ -20,7 +20,9 @@ num_bikes_unavailable = len(df_bikes[df_bikes['is_disabled'] == True].index)
 bikes_without_station = df_bikes[df_bikes['station_id'].isna()]
 num_bikes_without_station = len(bikes_without_station.index)
 
-df_cargo_charging = df_bikes[df_bikes['vehicle_type_id'] == '225'][['bike_id', 'lat', 'lon', 'station_id', 'vehicle_type_id']]
+df_cargo_charging = df_bikes[df_bikes['vehicle_type_id'] == '225'][['bike_id', 'current_fuel_percent', 'lat', 'lon', 'station_id', 'vehicle_type_id']]
+df_cargo_charging['fuel_color'] = df_cargo_charging.apply(lambda row: get_color(row['current_fuel_percent']), axis=1)
+df_cargo_charging = df_cargo_charging.sort_values(by=['current_fuel_percent'])
 
 df_info = pd.DataFrame(json_information['data']['stations'])
 df_status = pd.DataFrame(json_status['data']['stations'])
@@ -78,7 +80,7 @@ st.dataframe(full_stations[['name', 'num_bikes_available', 'num_docks_available'
 
 
 st.markdown('### Ladezustand Lastenräder')
-st.map(df_cargo_charging, latitude='lat', longitude='lon')
+st.map(df_cargo_charging, latitude='lat', longitude='lon', color='fuel_color')
 st.dataframe(df_cargo_charging)
 
 st.markdown('Daten aus öffentlicher [GBFS](https://github.com/MobilityData/gbfs) API: https://gbfs.nextbike.net/maps/gbfs/v2/nextbike_mz/de/')
