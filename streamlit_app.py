@@ -84,7 +84,7 @@ st.dataframe(full_stations[['name', 'num_bikes_available', 'num_docks_available'
 
 
 st.markdown('### Ladezustand Lastenräder')
-#st.map(df_cargo_charging, latitude='lat', longitude='lon', color='fuel_color')
+st.map(df_cargo_charging, latitude='lat', longitude='lon')
 st.dataframe(df_cargo_charging)
 
 st.markdown('Daten aus öffentlicher [GBFS](https://github.com/MobilityData/gbfs) API: https://gbfs.nextbike.net/maps/gbfs/v2/nextbike_mz/de/')
