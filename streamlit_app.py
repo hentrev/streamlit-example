@@ -44,7 +44,7 @@ df_merged['ratio'] = df_merged['ratio'].replace(np.inf, 0)
 df_merged['color'] = df_merged.apply(lambda row: '#{:02x}{:02x}{:02x}'.format(*get_color(row['ratio'])), axis=1)
 df_merged = df_merged.reset_index()
 
-df_cargo_charging = df_bikes[df_bikes['vehicle_type_id'] == '225']
+df_cargo_charging = df_bikes[(df_bikes['vehicle_type_id'] == '225') | (df_bikes['vehicle_type_id'] == '121')]
 df_cargo_charging['fuel_color'] = df_cargo_charging.apply(lambda row: '#{:02x}{:02x}{:02x}'.format(*get_color(row['current_fuel_percent'])), axis=1)
 
 df_cargo_charging = df_cargo_charging.sort_values(by=['current_fuel_percent'])
