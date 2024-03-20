@@ -8,10 +8,10 @@ from itertools import chain
 
 
 def get_color(pct):
-    pct_diff = (100 - pct) / 100
     pct = pct / 100
-    red_color = int(min(255, pct * 255))
-    green_color = int(min(255, pct_diff * 255))
+    pct_diff = (100 - pct) / 100
+    red_color = int(min(255, pct_diff  * 255))
+    green_color = int(min(255, pct  * 255))
     col = (red_color, green_color, 0, 1)
     return col
 
@@ -41,8 +41,8 @@ df_merged = df_info.merge(df_status, left_on='station_id', right_on='station_id'
 df_merged['num_bikes_available'] = df_merged['num_bikes_available']
 df_merged['ratio'] = (df_merged['num_bikes_available'] / df_merged['num_docks_available'])
 df_merged['ratio'] = df_merged['ratio'].replace(np.inf, 0)
-df_merged['color'] = df_merged.apply(lambda row: get_color(row['ratio']), axis=1)
-
+df_merged['color'] = df_merged.apply(lambda row: '#{:02x}{:02x}{:02x}'.format(*get_color(row['ratio'])), axis=1)
+df_merged = df_merged.reset_index()
 
 df_cargo_charging = df_bikes[df_bikes['vehicle_type_id'] == '225']
 df_cargo_charging['fuel_color'] = df_cargo_charging.apply(lambda row: '#{:02x}{:02x}{:02x}'.format(*get_color(row['current_fuel_percent'])), axis=1)
@@ -92,7 +92,7 @@ st.dataframe(full_stations[['name', 'num_bikes_available', 'num_docks_available'
 
 st.markdown('### Ladezustand Lastenräder')
 st.map(df_cargo_charging_merged, latitude='lat_x', longitude='lon_x', color='fuel_color')
-st.dataframe(df_cargo_charging_merged[['name', 'current_fuel_percent', 'bike_id']])
+st.dataframe(df_cargo_charging_merged[['name', 'current_fuel_percent', 'fuel_color']])
 
 
 st.markdown('Daten aus öffentlicher [GBFS](https://github.com/MobilityData/gbfs) API: https://gbfs.nextbike.net/maps/gbfs/v2/nextbike_mz/de/')
