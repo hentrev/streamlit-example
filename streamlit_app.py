@@ -9,8 +9,8 @@ from itertools import chain
 
 def get_color(pct):
     pct_diff = (100 - pct) / 100
-    red_color = min(255, pct_diff * 255)
-    green_color = min(255, pct_diff * 255)
+    red_color = int(min(255, pct_diff * 255))
+    green_color = int(min(255, pct_diff * 255))
     col = (red_color, green_color, 0, 1)
     return col
 
@@ -84,7 +84,7 @@ st.dataframe(full_stations[['name', 'num_bikes_available', 'num_docks_available'
 
 
 st.markdown('### Ladezustand Lastenräder')
-st.map(df_cargo_charging, latitude='lat', longitude='lon')
+st.map(df_cargo_charging, latitude='lat', longitude='lon', color='fuel_color')
 st.dataframe(df_cargo_charging)
 
 st.markdown('Daten aus öffentlicher [GBFS](https://github.com/MobilityData/gbfs) API: https://gbfs.nextbike.net/maps/gbfs/v2/nextbike_mz/de/')
