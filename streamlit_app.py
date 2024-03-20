@@ -20,6 +20,7 @@ num_bikes_unavailable = len(df_bikes[df_bikes['is_disabled'] == True].index)
 bikes_without_station = df_bikes[df_bikes['station_id'].isna()]
 num_bikes_without_station = len(bikes_without_station.index)
 
+df_cargo_charging = df_bikes[df_bikes['vehicle_type_id'] == 225]
 
 df_info = pd.DataFrame(json_information['data']['stations'])
 df_status = pd.DataFrame(json_status['data']['stations'])
@@ -74,6 +75,10 @@ st.dataframe(empty_stations[['name', 'num_bikes_available', 'num_docks_available
 st.markdown('### Volle Stationen')
 st.map(full_stations, latitude='lat', longitude='lon')
 st.dataframe(full_stations[['name', 'num_bikes_available', 'num_docks_available']])
+
+
+st.markdown('### Ladezustand Lastenräder')
+st.dataframe(df_cargo_charging)
 
 st.markdown('Daten aus öffentlicher [GBFS](https://github.com/MobilityData/gbfs) API: https://gbfs.nextbike.net/maps/gbfs/v2/nextbike_mz/de/')
 
