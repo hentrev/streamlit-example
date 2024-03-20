@@ -11,7 +11,7 @@ def get_color(pct):
     pct_diff = 1.0 - pct
     red_color = min(255, pct_diff*2 * 255)
     green_color = min(255, pct*2 * 255)
-    col = (red_color, green_color, 0)
+    col = (red_color, green_color, 0, 1)
     return col
 
 station_information = 'https://gbfs.nextbike.net/maps/gbfs/v2/nextbike_mz/de/station_information.json'
