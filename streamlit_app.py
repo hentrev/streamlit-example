@@ -6,6 +6,14 @@ import requests
 from time import sleep
 from itertools import chain
 
+
+def get_color(pct):
+    pct_diff = 1.0 - pct
+    red_color = min(255, pct_diff*2 * 255)
+    green_color = min(255, pct*2 * 255)
+    col = (red_color, green_color, 0)
+    return col
+
 station_information = 'https://gbfs.nextbike.net/maps/gbfs/v2/nextbike_mz/de/station_information.json'
 station_status = 'https://gbfs.nextbike.net/maps/gbfs/v2/nextbike_mz/de/station_status.json'
 free_bike_status = 'https://gbfs.nextbike.net/maps/gbfs/v2/nextbike_mz/de/free_bike_status.json'
@@ -35,12 +43,7 @@ df_merged['num_bikes_available'] = df_merged['num_bikes_available']
 df_merged['ratio'] = (df_merged['num_bikes_available'] / df_merged['num_docks_available'])
 df_merged['ratio'] = df_merged['ratio'].replace(np.inf, 0)
 
-def get_color(pct):
-    pct_diff = 1.0 - pct
-    red_color = min(255, pct_diff*2 * 255)
-    green_color = min(255, pct*2 * 255)
-    col = (red_color, green_color, 0)
-    return col
+
 
 df_merged['color'] = df_merged.apply(lambda row: get_color(row['ratio']), axis=1)
 
