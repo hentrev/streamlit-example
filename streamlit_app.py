@@ -51,7 +51,7 @@ if 'current_fuel_percent' in df_cargo_charging.columns:
     df_cargo_charging = df_cargo_charging.sort_values(by=['current_fuel_percent'])
     df_cargo_charging = df_cargo_charging[['bike_id', 'current_fuel_percent', 'fuel_color', 'lat', 'lon', 'station_id', 'vehicle_type_id']]
     df_cargo_charging = df_cargo_charging.reset_index()
-    df_cargo_charging['station_id'] = df_cargo_charging['station_id'].astype(int)
+    df_cargo_charging['station_id'] = df_cargo_charging['station_id'].fillna(0).astype(int)
     df_cargo_charging_merged = df_cargo_charging.merge(df_info, left_on='station_id', right_on='station_id')
 
 
